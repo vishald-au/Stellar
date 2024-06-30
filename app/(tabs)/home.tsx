@@ -4,11 +4,11 @@ import {
   FlatList,
   RefreshControl,
   Image,
+  Dimensions,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import React, { useState } from 'react';
-import Entypo from 'react-native-vector-icons/Entypo';
+const windowWidth = Dimensions.get('window').width;
 
 import Data from '@/data';
 import { ProductImages } from '@/constants/Images';
@@ -18,12 +18,23 @@ import { router } from 'expo-router';
 const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState('');
-  const [cartItems, setCartItems] = useState([]);
 
-  /* const handleCart = (e) => {
-    console.log(e);
-   
-  }; */
+  const shuffleArray = (array) => {
+    let currentIndex = array.length,
+      randomIndex;
+
+    while (currentIndex !== 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex],
+        array[currentIndex],
+      ];
+    }
+
+    return array;
+  };
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -34,25 +45,21 @@ const Home = () => {
     const productImage = ProductImages[`${image}`];
 
     return (
-      <View className="relative w-[48%]">
-        <TouchableOpacity onPress={() => router.push(`/product/${item.id}`)}>
-          <Image
-            source={productImage}
-            resizeMode="cover"
-            className="w-full h-72 mb-2 rounded-3xl"
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {}}
-          className="absolute top-3 right-3 bg-white p-2 rounded-full"
-        >
-          <Entypo name="add-to-list" color="#FBB4BF" size="23px" />
-        </TouchableOpacity>
-        <View className="px-4">
-          <Text className="text-lg font-bold text-black">{item.title}</Text>
-          <Text className="text-md text-gray-600">${item.price}</Text>
+      <>
+        <View className="relative w-[48%]">
+          <TouchableOpacity onPress={() => router.push(`/product/${item.id}`)}>
+            <Image
+              source={productImage}
+              resizeMode="cover"
+              className="w-full h-72 mb-2 rounded-3xl"
+            />
+          </TouchableOpacity>
+          <View className="px-4">
+            <Text className="text-lg font-bold text-black">{item.title}</Text>
+            <Text className="text-md text-gray-600">${item.price}</Text>
+          </View>
         </View>
-      </View>
+      </>
     );
   };
 
@@ -73,7 +80,10 @@ const Home = () => {
         <Image
           source={productImage}
           resizeMode="cover"
-          className="w-full max-w-xs h-52 object-top aspect-video mb-2 rounded-3xl"
+          className="h-52 mb-2 rounded-3xl"
+          style={{
+            width: windowWidth * 0.9,
+          }}
         />
       </View>
     );
@@ -108,6 +118,7 @@ const Home = () => {
           <View>
             <FlatList
               horizontal
+              pagingEnabled
               data={Data.products.slice(0, 3)}
               keyExtractor={(item) => item.id}
               renderItem={renderBannerOutput}
@@ -136,7 +147,9 @@ const Home = () => {
         numColumns={2}
         contentContainerStyle={{ gap: 25 }}
         columnWrapperStyle={{ gap: '10', justifyContent: 'space-between' }}
-        data={Data.products.filter((a) => a.title.includes(search))}
+        data={shuffleArray(Data.products).filter((a) =>
+          a.title.includes(search)
+        )}
         keyExtractor={(item) => item.id}
         renderItem={renderOutput}
         ListHeaderComponent={headerOutput}

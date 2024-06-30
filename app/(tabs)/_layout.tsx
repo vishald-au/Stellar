@@ -1,24 +1,50 @@
 import { Tabs, router } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StatusBar, TouchableOpacity, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import Octicons from 'react-native-vector-icons/Octicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ProductImages } from '@/constants/Images';
 
 export default function TabLayout() {
+  const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    loadCart();
+  }, []);
+
+  const loadCart = async () => {
+    try {
+      const cartData = await AsyncStorage.getItem('cart');
+      if (cartData !== null) {
+        setCart(JSON.parse(cartData));
+      }
+    } catch (error) {
+      console.log('Failed to load cart', error);
+    }
+  };
+
+  const clearCart = async () => {
+    try {
+      await AsyncStorage.removeItem('cart');
+      setCart([]);
+    } catch (error) {
+      console.error('Failed to clear cart', error);
+    }
+  };
+
   return (
     <View className="w-full h-full relative">
       <TouchableOpacity
-        onPress={() => router.push('/list')}
+        onPress={() => router.push('/home')}
         className="bg-white rounded-full w-fit p-3 absolute top-16 left-4 z-10"
       >
         <AntDesign name="appstore1" color="#FBB4BF" size="24px" />
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => router.push('/profile')}
+        onPress={() => clearCart()}
         className="bg-white rounded-full w-fit p-1 absolute top-16 right-4 z-10"
       >
         <Image
@@ -53,7 +79,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="home"
           options={{
-            title: 'Home',
+            title: 'home',
             tabBarIcon: ({ color, focused }) => (
               <MaterialCommunityIcons
                 name="home-variant"

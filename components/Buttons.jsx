@@ -1,6 +1,7 @@
 import { Text, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 const Buttons = ({
   title,
@@ -8,7 +9,16 @@ const Buttons = ({
   mainContainerStyles,
   containerStyles,
   textStyles,
+  colorOne,
+  colorTwo,
+  icon,
+  iconColor,
+  iconSize,
 }) => {
+  const colorsOne = colorOne ? colorOne : '#fbb4bf';
+  const colorsTwo = colorTwo ? colorTwo : '#da6264';
+  const colors = [colorsOne, colorsTwo];
+
   return (
     <TouchableOpacity
       className={`w-full ${mainContainerStyles}`}
@@ -16,16 +26,19 @@ const Buttons = ({
       activeOpacity={0.7}
     >
       <LinearGradient
-        colors={['#fbb4bf', '#da6264']}
+        colors={colors}
         start={{ x: 0.0, y: 0.0 }}
         end={{ x: 1.0, y: 1.0 }}
         className={`px-6 py-4 ${containerStyles}`}
       >
-        <Text
-          className={`text-white font-medium text-center leading-none ${textStyles}`}
-        >
-          {title}
-        </Text>
+        {title ? (
+          <Text
+            className={`text-white font-medium text-center leading-none ${textStyles}`}
+          >
+            {title}
+          </Text>
+        ) : null}
+        {icon ? <Entypo name={icon} color={iconColor} size={iconSize} /> : null}
       </LinearGradient>
     </TouchableOpacity>
   );

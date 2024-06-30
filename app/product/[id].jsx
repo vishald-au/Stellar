@@ -4,15 +4,15 @@ import {
   TouchableOpacity,
   StatusBar,
   Image,
-  ScrollView,
-  SafeAreaView,
+  Dimensions,
   FlatList,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { router, useLocalSearchParams } from 'expo-router';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+const windowWidth = Dimensions.get('window').width;
 
 import { ProductImages } from '@/constants/Images';
 import Buttons from '@/components/Buttons';
@@ -21,19 +21,47 @@ import Data from '@/data';
 const Product = () => {
   const { id } = useLocalSearchParams();
   const product = Data.products.find((a) => a.id === id);
+  const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    loadCart();
+  }, []);
+
+  const addToCart = async () => {
+    try {
+      const updatedCart = [...cart, product];
+      setCart(updatedCart);
+      await AsyncStorage.setItem('cart', JSON.stringify(updatedCart));
+    } catch (error) {
+      console.error('Failed to add item to cart', error);
+    }
+  };
+
+  const loadCart = async () => {
+    try {
+      const cartData = await AsyncStorage.getItem('cart');
+      if (cartData !== null) {
+        setCart(JSON.parse(cartData));
+      }
+    } catch (error) {
+      console.log('Failed to load cart', error);
+    }
+  };
 
   const RenderProduct = () => {
-    const image = product.image[0];
-    const productImage = ProductImages[`${image}`];
-    const productImageNew = ['1', '2', '3'];
-
-    const ImageSlider = () => {
+    const ImageSlider = ({ item }) => {
+      const productImageX = ProductImages[`${item}`];
       return (
-        <Image
-          source={productImage}
-          resizeMode="cover"
-          className="w-full h-[500px] mt-0 mb-12 rounded-3xl"
-        />
+        <>
+          <Image
+            source={productImageX}
+            resizeMode="cover"
+            className="h-[500px] rounded-3xl"
+            style={{
+              width: windowWidth,
+            }}
+          />
+        </>
       );
     };
 
@@ -49,17 +77,14 @@ const Product = () => {
               // Android elevation property
               elevation: 1,
             }}
+            className="mt-0 mb-12 rounded-3xl"
           >
-            {/* <FlatList
+            <FlatList
               horizontal
-              data={productImageNew}
+              pagingEnabled
+              data={product.image}
               renderItem={ImageSlider}
               keyExtractor={(item) => item.id}
-            /> */}
-            <Image
-              source={productImage}
-              resizeMode="cover"
-              className="w-full h-[500px] mt-0 mb-12 rounded-3xl"
             />
           </View>
           <View className="px-4 w-full h-full relative">
@@ -101,20 +126,38 @@ const Product = () => {
             <Ionicons name="arrow-back" color="#FBB4BF" size="24px" />
           </TouchableOpacity>
         </View>
+        {cart.length ? (
+          <TouchableOpacity
+            onPress={() => router.push('/list')}
+            className="bg-white rounded-full w-12 p-3 h-12 items-center justify-center absolute top-16 right-4 z-20"
+          >
+            <Text className="text-secondary font-medium">{cart.length}</Text>
+          </TouchableOpacity>
+        ) : null}
+
         <View className="flex-row py-12 justify-between items-center gap-x-1 absolute bottom-0 left-4 z-20">
           <Buttons
             title="Buy Now"
-            handlePress={() => {}}
+            handlePress={() => {
+              router.push('/list');
+            }}
             mainContainerStyles="w-8/12"
             containerStyles="rounded-3xl py-6"
             textStyles="text-lg"
           />
-          <TouchableOpacity
-            onPress={() => {}}
-            className="bg-gray-100 rounded-full h-20 w-20 items-center justify-center p-2"
-          >
-            <Entypo name="add-to-list" color="#FBB4BF" size="30px" />
-          </TouchableOpacity>
+          <Buttons
+            handlePress={() => {
+              addToCart();
+            }}
+            mainContainerStyles="w-2/12"
+            containerStyles="rounded-full h-20 w-20 items-center justify-center p-2"
+            textStyles="text-lg text-gray"
+            colorOne="#FAFAFF"
+            colorTwo="#FAFAFF"
+            icon="add-to-list"
+            iconColor="#FBB4BF"
+            iconSize="30px"
+          />
         </View>
         <FlatList
           data={product ? [product] : null}

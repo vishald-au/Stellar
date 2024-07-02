@@ -28,13 +28,22 @@ const SearchInput = ({ search, setSearch }) => {
         }}
       >
         <TextInput
-          className="ml-2 text-gray-500 text-xl py-4 w-56"
+          className="ml-2 text-gray-500 text-xl pt-3 pb-4 w-56"
           placeholder="Search"
           placeholderTextColor="#aaaaaa"
           value={query}
           onChangeText={(e) => setQuery(e)}
           onSubmitEditing={handleSearch}
         />
+        {search ? (
+          <TouchableOpacity
+            className="pr-2 absolute right-0"
+            onPress={() => setSearch('')}
+            activeOpacity={0.7}
+          >
+            <EvilIcons name="close" color="#aaaaaa" size="22px" />
+          </TouchableOpacity>
+        ) : null}
       </View>
       <TouchableOpacity
         className=""
@@ -49,7 +58,7 @@ const SearchInput = ({ search, setSearch }) => {
           elevation: 1,
         }}
       >
-        <View className=" bg-secondary drop-shadow-[0_25px_27px_rgba(0,0,0,1))] rounded-xl w-16 py-4 items-center justify-center overflow-hidden flex-row">
+        <View className=" bg-secondary drop-shadow-[0_25px_27px_rgba(0,0,0,1))] rounded-xl w-16 pt-3 pb-4 items-center justify-center overflow-hidden flex-row">
           <EvilIcons name="search" color="#fff" size="32px" />
         </View>
       </TouchableOpacity>

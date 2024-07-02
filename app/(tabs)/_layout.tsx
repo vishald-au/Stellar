@@ -9,42 +9,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ProductImages } from '@/constants/Images';
 
 export default function TabLayout() {
-  const [cart, setCart] = useState([]);
-
-  useEffect(() => {
-    loadCart();
-  }, []);
-
-  const loadCart = async () => {
-    try {
-      const cartData = await AsyncStorage.getItem('cart');
-      if (cartData !== null) {
-        setCart(JSON.parse(cartData));
-      }
-    } catch (error) {
-      console.log('Failed to load cart', error);
-    }
-  };
-
-  const clearCart = async () => {
-    try {
-      await AsyncStorage.removeItem('cart');
-      setCart([]);
-    } catch (error) {
-      console.error('Failed to clear cart', error);
-    }
-  };
-
   return (
     <View className="w-full h-full relative">
       <TouchableOpacity
-        onPress={() => router.push('/home')}
+        onPress={() => router.push('/list')}
         className="bg-white rounded-full w-fit p-3 absolute top-16 left-4 z-10"
       >
         <AntDesign name="appstore1" color="#FBB4BF" size="24px" />
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => clearCart()}
+        onPress={() => router.push('/profile')}
         className="bg-white rounded-full w-fit p-1 absolute top-16 right-4 z-10"
       >
         <Image

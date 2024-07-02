@@ -29,7 +29,17 @@ const Product = () => {
 
   const addToCart = async () => {
     try {
-      const updatedCart = [...cart, product];
+      const productInCart = cart.find((a) => a.id === product.id);
+      let updatedCart;
+      if (productInCart) {
+        updatedCart = cart.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      } else {
+        updatedCart = [...cart, { ...product, quantity: 1 }];
+      }
       setCart(updatedCart);
       await AsyncStorage.setItem('cart', JSON.stringify(updatedCart));
     } catch (error) {
@@ -84,7 +94,7 @@ const Product = () => {
               pagingEnabled
               data={product.image}
               renderItem={ImageSlider}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item, index) => index}
             />
           </View>
           <View className="px-4 w-full h-full relative">
@@ -126,25 +136,26 @@ const Product = () => {
             <Ionicons name="arrow-back" color="#FBB4BF" size="24px" />
           </TouchableOpacity>
         </View>
-        {cart.length ? (
+        {/* {cart.length ? (
           <TouchableOpacity
-            onPress={() => router.push('/list')}
+            onPress={() => router.push('/cart')}
             className="bg-white rounded-full w-12 p-3 h-12 items-center justify-center absolute top-16 right-4 z-20"
           >
             <Text className="text-secondary font-medium">{cart.length}</Text>
           </TouchableOpacity>
-        ) : null}
+        ) : null} */}
 
         <View className="flex-row py-12 justify-between items-center gap-x-1 absolute bottom-0 left-4 z-20">
           <Buttons
-            title="Buy Now"
+            title={`View Cart (${cart.length})`}
             handlePress={() => {
-              router.push('/list');
+              router.push('/cart');
             }}
             mainContainerStyles="w-8/12"
             containerStyles="rounded-3xl py-6"
             textStyles="text-lg"
           />
+
           <Buttons
             handlePress={() => {
               addToCart();

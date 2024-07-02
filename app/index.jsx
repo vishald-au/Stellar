@@ -18,7 +18,7 @@ const Index = () => {
 
   return (
     <>
-      <View class="bg-secondary-500 w-full h-full items-center justify-center flex-1">
+      <View className="bg-secondary-500 w-full h-full items-center justify-center flex-1">
         <Image
           source={splashImage}
           resizeMode="cover"

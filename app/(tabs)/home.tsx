@@ -68,15 +68,19 @@ const Home = () => {
   };
 
   const renderBannerOutput = ({ item }) => {
-    const getRandomNumber = (min, max) => {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-
-    const randomNumber = getRandomNumber(1, 5);
-    const productImage = ProductImages[`random${randomNumber}`];
+    const image = item.image[0];
+    const productImage = ProductImages[`${image}`];
 
     return (
-      <View className="relative">
+      <TouchableOpacity
+        className="relative"
+        onPress={() => router.push(`/product/${item.id}`)}
+      >
+        <View className="absolute z-10 flex items-center justify-center w-full h-full">
+          <Text className="text-5xl font-black text-white/50">
+            {item.brand}
+          </Text>
+        </View>
         <Image
           source={productImage}
           resizeMode="cover"
@@ -85,29 +89,39 @@ const Home = () => {
             width: windowWidth * 0.9,
           }}
         />
-      </View>
+      </TouchableOpacity>
     );
   };
 
   const renderBrandsOutput = ({ item, index }) => {
     return (
-      <View
+      <TouchableOpacity
         className={`relative  rounded-full mt-7 mb-4 px-1 pt-2 pb-1 ${
           index === 0 ? 'bg-secondary-500/60' : 'bg-primary'
         }`}
+        onPress={() => setSearch(item)}
       >
         <Text
           className={`px-4 text-xl leading-none mb-1 ${
             index === 0 ? 'text-white' : 'text-gray-500'
           }`}
         >
-          {item.brand}
+          {item}
         </Text>
-      </View>
+      </TouchableOpacity>
     );
   };
 
   const headerOutput = () => {
+    const getBrands = (products) => {
+      const uniqueBrands = new Set();
+      products.forEach((product) => {
+        uniqueBrands.add(product.brand);
+      });
+      const UniqueBrandsArray = Array.from(uniqueBrands);
+      return UniqueBrandsArray;
+    };
+
     return (
       <>
         <View className="pt-36"></View>
@@ -119,7 +133,7 @@ const Home = () => {
             <FlatList
               horizontal
               pagingEnabled
-              data={Data.products.slice(0, 3)}
+              data={shuffleArray(Data.products).slice(0, 3)}
               keyExtractor={(item) => item.id}
               renderItem={renderBannerOutput}
               contentContainerStyle={{ gap: 10 }}
@@ -128,8 +142,8 @@ const Home = () => {
             />
             <FlatList
               horizontal
-              data={Data.products.slice(0, 5)}
-              keyExtractor={(item) => item.id}
+              data={getBrands(Data.products)}
+              keyExtractor={(item, index) => index}
               renderItem={renderBrandsOutput}
               contentContainerStyle={{ gap: 10 }}
               showsHorizontalScrollIndicator={false}
@@ -147,8 +161,17 @@ const Home = () => {
         numColumns={2}
         contentContainerStyle={{ gap: 25 }}
         columnWrapperStyle={{ gap: '10', justifyContent: 'space-between' }}
-        data={shuffleArray(Data.products).filter((a) =>
-          a.title.includes(search)
+        data={shuffleArray(Data.products).filter(
+          (a) =>
+            a.title.toLowerCase().includes(search.toLowerCase()) ||
+            a.category.toLowerCase().includes(search.toLowerCase()) ||
+            (a.price &&
+              a.price
+                .toString()
+                .toLowerCase()
+                .includes(search.toLowerCase())) ||
+            a.brand.toLowerCase().includes(search.toLowerCase()) ||
+            a.description.toLowerCase().includes(search.toLowerCase())
         )}
         keyExtractor={(item) => item.id}
         renderItem={renderOutput}

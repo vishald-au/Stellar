@@ -2,13 +2,14 @@
   "expo": {
     "name": "Stellar",
     "slug": "Stellar",
+    "description": "Demo app for portfolio",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/stellar.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/stellar.png",
+      "image": "",
       "resizeMode": "contain",
       "backgroundColor": "#DA6264"
     },

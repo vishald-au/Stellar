@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Stellar",
-    "slug": "Stellar",
+    "slug": "stellar",
     "description": "Demo app for portfolio",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -27,9 +27,20 @@
       "output": "static",
       "favicon": "./assets/images/stellar.png"
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router"
+    ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "2d472102-4c9a-4980-9dff-f50f674e7935"
+      }
+    },
+    "owner": "vishal-au"
   }
 }

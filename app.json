@@ -14,13 +14,15 @@
       "backgroundColor": "#DA6264"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": ""
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/stellar.png",
         "backgroundColor": "#DA6264"
-      }
+      },
+      "package": "stellar.demo"
     },
     "web": {
       "bundler": "metro",

@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": ""
+      "bundleIdentifier": "stellar.demo"
     },
     "android": {
       "adaptiveIcon": {
